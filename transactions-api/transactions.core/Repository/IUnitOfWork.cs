@@ -8,8 +8,8 @@ namespace transactions.core.Repository
 {
     public interface IUnitOfWork
     {
-        IShopTransactionRepository TransactionRepository { get; set; }
-        IInvoiceRepository InvoiceRepository { get; set; }
+        IShopTransactionRepository TransactionRepository { get; }
+        IInvoiceRepository InvoiceRepository { get; }
 
         /// <summary>
         ///     Commit all data transaction(s)

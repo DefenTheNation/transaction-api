@@ -28,7 +28,7 @@ namespace transactions.core.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        ShopTransaction Get(int id);
+        ShopTransaction? Get(int id);
 
         /// <summary>
         ///     Create a transaction and get an id in return

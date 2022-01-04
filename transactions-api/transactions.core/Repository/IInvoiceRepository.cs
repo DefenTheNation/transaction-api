@@ -20,7 +20,7 @@ namespace transactions.core.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Invoice Get(int id);
+        Invoice? Get(int id);
 
         /// <summary>
         ///     Create a new invoice

@@ -5,18 +5,25 @@ namespace transactions.fileDB
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public IShopTransactionRepository TransactionRepository { get; set; }
-        public IInvoiceRepository InvoiceRepository { get; set; }
+        public const string TransactionFileName = "TransactionDB.json";
+        public const string InvoicesFileName = "InvoicesDB.json";
+
+        private readonly ShopTransactionRepository _transactionRepository;
+        private readonly InvoiceRepository _invoiceRepository;
+
+        public IShopTransactionRepository TransactionRepository { get { return _transactionRepository; } }
+        public IInvoiceRepository InvoiceRepository { get { return _invoiceRepository; } }
 
         public UnitOfWork()
         {
-            TransactionRepository = new TransactionRepository();
-            InvoiceRepository = new InvoiceRepository();
+            _transactionRepository = new ShopTransactionRepository(TransactionFileName);
+            _invoiceRepository = new InvoiceRepository(InvoicesFileName);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            _transactionRepository.CommitToFile();
+            _invoiceRepository.CommitToFile();
         }
     }
 }
