@@ -74,7 +74,7 @@ namespace transactions.core.Services
         ///     Update an existing invoice
         /// </summary>
         /// <param name="invoice"></param>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentException">Invoice has no transactions</exception>
         public void UpdateInvoice(Invoice invoice)
         {
             if(invoice.Transactions == null || !invoice.Transactions.Any())
@@ -84,6 +84,40 @@ namespace transactions.core.Services
 
             _unitOfWork.InvoiceRepository.Update(invoice);
             _unitOfWork.Save();
+        }
+
+        /// <summary>
+        ///     Mark an invoice and its transactions as paid. If a transaction is cancelled, then do not mark as paid.
+        /// </summary>
+        /// <param name="invoiceId"></param>
+        /// <returns>Paid invoice</returns>
+        /// <exception cref="ArgumentException">Invoice was not found or has no transactions</exception>
+        public Invoice PayInvoice(int invoiceId)
+        {
+            Invoice? invoice = _unitOfWork.InvoiceRepository.Get(invoiceId);
+
+            if (invoice == null)
+            {
+                throw new ArgumentException("Invoice with id " + invoiceId + " not found!");
+            }
+            else if(invoice.Transactions == null || !invoice.Transactions.Any())
+            {
+                throw new ArgumentException("Invoice with id " + invoiceId + " has no transactions! Payment could not be made.");
+            }
+
+            // Ignore cancelled transactions
+            foreach(var transaction in invoice.Transactions)
+            {
+                if(transaction.Status != ShopTransactionStatusType.Cancelled)
+                {
+                    transaction.Status = ShopTransactionStatusType.Paid;
+                }
+            }
+
+            _unitOfWork.InvoiceRepository.Update(invoice);
+            _unitOfWork.Save();
+
+            return invoice;
         }
     }
 }

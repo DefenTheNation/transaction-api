@@ -15,11 +15,11 @@ namespace transactions.fileDB.Repository
         protected List<Invoice> _invoices;
         protected ShopTransactionRepository _shopTransactionRepository;
 
-        public InvoiceRepository(string filename)
+        public InvoiceRepository(string invoiceFileName, string transactionFileName)
         {
-            _databaseFileName = filename;
+            _databaseFileName = invoiceFileName;
             _invoices = new List<Invoice>();
-            _shopTransactionRepository = new ShopTransactionRepository(UnitOfWork.TransactionFileName);
+            _shopTransactionRepository = new ShopTransactionRepository(transactionFileName);
 
             LoadDataFromFile();
         }

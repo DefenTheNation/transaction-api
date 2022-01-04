@@ -96,5 +96,30 @@ namespace transactions.api.Controllers
 
             return NoContent();
         }
+
+        [HttpPost("{Id}/pay")]
+        public ActionResult PostPayment(int id)
+        {
+            Invoice invoice;
+
+            try
+            {
+                invoice = _invoiceService.PayInvoice(id);
+            }
+            catch (ArgumentException ex)
+            {
+                // Pass through error message from Business Logic Layer
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                // Log exception
+
+                // Return server error
+                return StatusCode(500);
+            }
+
+            return Ok(invoice);
+        }
     }
 }

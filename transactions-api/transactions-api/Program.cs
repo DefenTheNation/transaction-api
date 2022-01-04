@@ -5,11 +5,17 @@ using transactions.core.Repository;
 using transactions.core.Services;
 using transactions.fileDB;
 
+const string TransactionDBFileNameKey = "TransactionDBFileName";
+const string InvoiceDBFileNameKey = "InvoiceDBFileName";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 // Add IUnitOfWork service - Implementation is defined with Dependency Injection
-builder.Services.AddScoped<IUnitOfWork>(x => new UnitOfWork());
+builder.Services.AddScoped<IUnitOfWork>(x => 
+    new UnitOfWork(builder.Configuration.GetValue<string>(TransactionDBFileNameKey), 
+        builder.Configuration.GetValue<string>(InvoiceDBFileNameKey)));
+
 builder.Services.AddScoped<ShopTransactionService>(x => new ShopTransactionService(x.GetRequiredService<IUnitOfWork>()));
 builder.Services.AddScoped<InvoiceService>(x => new InvoiceService(x.GetRequiredService<IUnitOfWork>()));
 builder.Services.AddControllers().AddJsonOptions(opts =>

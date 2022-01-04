@@ -127,30 +127,34 @@ namespace transactions.api.Controllers
         }
 
         /// <summary>
-        ///     Delete action - note that it does not remove a shop transaction but cancel it
+        ///     Updates the status of the transaction
         /// </summary>
-        /// <param name="id">Id of the shop transaction</param>
+        /// <param name="id">Transaction id</param>
+        /// <param name="newStatus">New status of the transaction</param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        [HttpPost("{id}/updateStatus")]
+        public ActionResult PostStatusUpdate(int id, [FromBody] ShopTransactionStatusType newStatus)
         {
+            ShopTransaction transaction;
+
             try
             {
-                _shopTransactionService.CancelTransaction(id);
-                return NoContent();
+                transaction = _shopTransactionService.UpdateTransactionStatus(id, newStatus);
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 // Pass through error message from Business Logic Layer
                 return BadRequest(ex.Message);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 // Log exception
 
                 // Return server error
                 return StatusCode(500);
             }
+
+            return Ok(transaction);
         }
     }
 }
